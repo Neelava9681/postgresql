@@ -1,0 +1,1 @@
+import {AuthOption} from "next-auth"
