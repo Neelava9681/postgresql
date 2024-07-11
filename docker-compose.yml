@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  nextjs:
+    build: .
+    ports:
+      - '3000:3000'  # Map container port 3000 to host port 3000
+    environment:
+      - DATABASE_URL=postgresql://postgres:Neelava@123@postgres:5432/devProject?schema=public  # Update localhost to 'postgres' (service name)
+    depends_on:
+      - postgres
+    volumes:
+      - .:/app  # Mount current directory (where docker-compose.yml is located) to /app in container
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: pgadmin4@pgadmin.org
+      POSTGRES_PASSWORD: Neelava@123
+      POSTGRES_DB: devProject
+    ports:
+      - '5432:5432'  # Map container port 5432 to host port 5432 for PostgreSQL
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:  # Define named volume for PostgreSQL data persistence

@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const jwtSecret = "iMeeLdsbhdgjhewkwejg#@$";
+// const jwtSecret = "iMeeLdsbhdgjhewkwejg#@$";
 
 const prisma = new PrismaClient({
-    log: ["query"],
+    // log: ["query"],
 });
 
 export async function POST(req) {
@@ -27,14 +27,30 @@ export async function POST(req) {
             return NextResponse.json({ msg: "Password incorrect" }, { status: 400 });
         }
 
-        const data = {
-            user: {
-                id: findUser.id,
-            },
-        };
+        // const data = {
+        //     user: {
+        //         id: findUser.id,
+        //     },
+        // };
+        const data = findUser.id
+           
 
-        const authToken = jwt.sign(data, jwtSecret);
-        return NextResponse.json({ msg: "Login successful", token: authToken }, { status: 200 });
+        console.log(data)//it will be use in dynamic api
+
+        const authToken = jwt.sign(data, process.env.jwtSecret);
+
+        const response = NextResponse.json({msg:"login sucessfull", status:200, token:authToken})
+
+        response.cookies.set("token", authToken,{
+            expiresIn:"1d",
+            httpOnly:true
+        })
+
+        return response
+
+
+       
+        
     } catch (error) {
         console.error("Error during login process:", error);
         return NextResponse.json({ msg: "Internal server error" }, { status: 500 });
